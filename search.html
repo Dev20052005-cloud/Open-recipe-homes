@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Recipes - OpenRecipe</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-utensils"></i>
+                    <span>OpenRecipe</span>
+                </a>
+                
+                <form id="searchForm" class="search-form">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search recipes...">
+                    </div>
+                </form>
+                
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="create-recipe.html" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        <span>Add Recipe</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="category-bar">
+                <a href="category.html?cat=breakfast" class="category-link">Breakfast</a>
+                <a href="category.html?cat=lunch" class="category-link">Lunch</a>
+                <a href="category.html?cat=dinner" class="category-link">Dinner</a>
+                <a href="category.html?cat=dessert" class="category-link">Dessert</a>
+                <a href="category.html?cat=vegetarian" class="category-link">Vegetarian</a>
+                <a href="category.html?cat=vegan" class="category-link">Vegan</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="section">
+            <h1 id="searchTitle" class="text-3xl font-bold mb-6">Search Results</h1>
+            <div id="searchResults" class="recipes-grid">
+                <!-- Search results will be loaded here -->
+            </div>
+            
+            <div class="mt-8 text-center">
+                <a href="index.html" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Home
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 OpenRecipe. All recipes shared by our amazing community.</p>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setupSearchPage();
+            setupSearch();
+        });
+    </script>
+</body>
+</html>

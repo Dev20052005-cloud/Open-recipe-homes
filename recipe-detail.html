@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Details - OpenRecipe</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-utensils"></i>
+                    <span>OpenRecipe</span>
+                </a>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="create-recipe.html" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        <span>Add Recipe</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div id="recipeDetail" class="recipe-detail">
+            <!-- Recipe content will be loaded here -->
+        </div>
+
+        <!-- Back button -->
+        <div class="mt-4">
+            <a href="index.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Back to Recipes
+            </a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 OpenRecipe. All recipes shared by our amazing community.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Function to get recipe by ID from localStorage
+        async function getRecipeById(recipeId) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    try {
+                        const recipesJson = localStorage.getItem('openrecipe_recipes');
+                        if (recipesJson) {
+                            const recipes = JSON.parse(recipesJson);
+                            const recipe = recipes.find(r => r.id === recipeId);
+                            resolve(recipe || null);
+                        } else {
+                            resolve(null);
+                        }
+                    } catch (error) {
+                        console.error('Error loading recipe:', error);
+                        resolve(null);
+                    }
+                }, 200);
+            });
+        }
+
+        // Function to format time
+        function formatTime(minutes) {
+            if (!minutes || minutes === 0) return 'N/A';
+            if (minutes < 60) return `${minutes}m`;
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            if (mins === 0) return `${hours}h`;
+            return `${hours}h ${mins}m`;
+        }
+
+        // Function to get recipe image
+        function getRecipeImage(recipe) {
+            if (recipe.imageUrl) return recipe.imageUrl;
+            
+            const categoryImages = {
+                'breakfast': 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=800&auto=format&fit=crop',
+                'lunch': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop',
+                'dinner': 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800&auto=format&fit=crop',
+                'dessert': 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=800&auto=format&fit=crop',
+                'vegetarian': 'https://images.unsplash.com/photo-1540420828642-fca2c5c18abb?w=800&auto=format&fit=crop',
+                'vegan': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&auto=format&fit=crop'
+            };
+            
+            return categoryImages[recipe.category?.toLowerCase()] || 
+                   'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&auto=format&fit=crop';
+        }
+
+        // Function to get difficulty class
+        function getDifficultyClass(difficulty) {
+            const classes = {
+                'easy': 'difficulty-easy',
+                'medium': 'difficulty-medium',
+                'hard': 'difficulty-hard'
+            };
+            return classes[difficulty?.toLowerCase()] || 'difficulty-easy';
+        }
+
+        // Load recipe detail
+        async function loadRecipeDetail() {
+            const container = document.getElementById('recipeDetail');
+            
+            // Get recipe ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const recipeId = urlParams.get('id');
+            
+            if (!recipeId) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Show loading state
+            container.innerHTML = `
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading recipe...</p>
+                </div>
+            `;
+            
+            try {
+                const recipe = await getRecipeById(recipeId);
+                
+                if (!recipe) {
+                    throw new Error('Recipe not found');
+                }
+                
+                // Render recipe WITHOUT edit/delete buttons
+                renderRecipeDetail(container, recipe);
+            } catch (error) {
+                console.error('Error loading recipe:', error);
+                container.innerHTML = `
+                    <div class="error-state">
+                        <div class="error-icon">❌</div>
+                        <h3>Recipe not found</h3>
+                        <p>The recipe you're looking for doesn't exist or has been removed.</p>
+                        <a href="index.html" class="btn btn-primary mt-4">
+                            <i class="fas fa-home"></i> Back to Home
+                        </a>
+                    </div>
+                `;
+            }
+        }
+
+        // Render recipe detail - NO EDIT/DELETE BUTTONS
+        function renderRecipeDetail(container, recipe) {
+            const totalTime = (recipe.prepTime || 0) + (recipe.cookTime || 0);
+            
+            container.innerHTML = `
+                <div class="recipe-detail-container">
+                    <!-- Recipe Header - NO ACTION BUTTONS -->
+                    <div class="recipe-header">
+                        <h1 class="recipe-title-large">${recipe.title || 'Untitled Recipe'}</h1>
+                        <p class="recipe-subtitle">${recipe.description || ''}</p>
+                        
+                        <div class="recipe-meta-large">
+                            <span class="badge badge-category-large">${recipe.category || 'Uncategorized'}</span>
+                            <span class="badge badge-difficulty-large ${getDifficultyClass(recipe.difficulty)}">
+                                ${recipe.difficulty || 'Easy'}
+                            </span>
+                            ${recipe.tags && recipe.tags.length > 0 ? recipe.tags.map(tag => `
+                                <span class="tag-large">#${tag}</span>
+                            `).join('') : ''}
+                        </div>
+                    </div>
+                    
+                    <!-- Recipe Image -->
+                    <div class="recipe-image-large" style="background-image: url('${getRecipeImage(recipe)}')"></div>
+                    
+                    <!-- Recipe Stats -->
+                    <div class="recipe-stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                            <div class="stat-label">Prep Time</div>
+                            <div class="stat-value">${recipe.prepTime || 0} min</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                            <div class="stat-label">Cook Time</div>
+                            <div class="stat-value">${recipe.cookTime || 0} min</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-user-friends"></i></div>
+                            <div class="stat-label">Servings</div>
+                            <div class="stat-value">${recipe.servings || 1}</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-fire"></i></div>
+                            <div class="stat-label">Total Time</div>
+                            <div class="stat-value">${formatTime(totalTime)}</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recipe Content -->
+                    <div class="recipe-content-grid">
+                        <!-- Ingredients -->
+                        <div class="ingredients-section">
+                            <h2><i class="fas fa-shopping-basket"></i> Ingredients</h2>
+                            <ul class="ingredients-list">
+                                ${(recipe.ingredients || ['No ingredients listed']).map(ingredient => `
+                                    <li>${ingredient}</li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                        
+                        <!-- Instructions -->
+                        <div class="instructions-section">
+                            <h2><i class="fas fa-list-ol"></i> Instructions</h2>
+                            <ol class="instructions-list">
+                                ${(recipe.instructions || ['No instructions available']).map((instruction, index) => `
+                                    <li>
+                                        <span class="step-number">${index + 1}</span>
+                                        <span class="step-content">${instruction}</span>
+                                    </li>
+                                `).join('')}
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <!-- Notes & Tips -->
+                    ${recipe.notes ? `
+                        <div class="notes-section">
+                            <h2><i class="fas fa-lightbulb"></i> Notes & Tips</h2>
+                            <p>${recipe.notes}</p>
+                        </div>
+                    ` : ''}
+                    
+                    <!-- Print Button Only - NO EDIT/DELETE -->
+                    <div class="recipe-footer">
+                        <button onclick="window.print()" class="btn btn-outline">
+                            <i class="fas fa-print"></i> Print Recipe
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load recipe when page loads
+        document.addEventListener('DOMContentLoaded', loadRecipeDetail);
+    </script>
+</body>
+</html>

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Recipe - OpenRecipe</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Additional styles for edit page */
+        .form-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #eab308;
+            box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.1);
+        }
+        
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .ingredient-row, .instruction-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .ingredient-row input, .instruction-row textarea {
+            flex: 1;
+        }
+        
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            background-color: #f3f4f6;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .btn-icon:hover {
+            background-color: #e5e7eb;
+        }
+        
+        .btn-remove {
+            color: #dc2626;
+        }
+        
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .tag-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tag {
+            background-color: #f3f4f6;
+            color: #4b5563;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .tag button {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 0;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background-color: #eab308;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #ca8a04;
+        }
+        
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-utensils"></i>
+                    <span>OpenRecipe</span>
+                </a>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="form-container">
+            <h1 class="text-center mb-6">Edit Recipe</h1>
+            
+            <form id="recipeForm">
+                <input type="hidden" id="recipeId" name="id">
+                
+                <!-- Basic Info -->
+                <div class="form-row mb-6">
+                    <div class="form-group">
+                        <label for="title" class="form-label">Recipe Title *</label>
+                        <input type="text" id="title" name="title" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category" class="form-label">Category *</label>
+                        <select id="category" name="category" class="form-control" required>
+                            <option value="">Select Category</option>
+                            <option value="Breakfast">Breakfast</option>
+                            <option value="Lunch">Lunch</option>
+                            <option value="Dinner">Dinner</option>
+                            <option value="Dessert">Dessert</option>
+                            <option value="Vegetarian">Vegetarian</option>
+                            <option value="Vegan">Vegan</option>
+                            <option value="Seafood">Seafood</option>
+                            <option value="Meat">Meat</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Description -->
+                <div class="form-group mb-6">
+                    <label for="description" class="form-label">Description *</label>
+                    <textarea id="description" name="description" class="form-control" rows="3" required></textarea>
+                </div>
+                
+                <!-- Time & Servings -->
+                <div class="form-row mb-6">
+                    <div class="form-group">
+                        <label for="prepTime" class="form-label">Prep Time (minutes)</label>
+                        <input type="number" id="prepTime" name="prepTime" class="form-control" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cookTime" class="form-label">Cook Time (minutes)</label>
+                        <input type="number" id="cookTime" name="cookTime" class="form-control" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="servings" class="form-label">Servings</label>
+                        <input type="number" id="servings" name="servings" class="form-control" min="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="difficulty" class="form-label">Difficulty</label>
+                        <select id="difficulty" name="difficulty" class="form-control">
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Ingredients -->
+                <div class="form-group mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="form-label">Ingredients *</label>
+                        <button type="button" id="addIngredient" class="btn btn-secondary">
+                            <i class="fas fa-plus"></i> Add Ingredient
+                        </button>
+                    </div>
+                    <div id="ingredientsContainer"></div>
+                </div>
+                
+                <!-- Instructions -->
+                <div class="form-group mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="form-label">Instructions *</label>
+                        <button type="button" id="addInstruction" class="btn btn-secondary">
+                            <i class="fas fa-plus"></i> Add Step
+                        </button>
+                    </div>
+                    <div id="instructionsContainer"></div>
+                </div>
+                
+                <!-- Tags -->
+                <div class="form-group mb-6">
+                    <label class="form-label">Tags</label>
+                    <div class="tag-input-group">
+                        <input type="text" id="tagInput" class="form-control" placeholder="Add a tag (e.g., spicy, healthy)">
+                        <button type="button" id="addTag" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div id="tagsContainer"></div>
+                </div>
+                
+                <!-- Image URL -->
+                <div class="form-group mb-6">
+                    <label for="imageUrl" class="form-label">Image URL (Optional)</label>
+                    <input type="url" id="imageUrl" name="imageUrl" class="form-control">
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="flex justify-end gap-4">
+                    <a href="index.html" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Recipe
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 OpenRecipe. All recipes shared by our amazing community.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple recipe form handler for edit page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get recipe ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const recipeId = urlParams.get('id');
+            
+            if (!recipeId) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Load recipe data
+            loadRecipeData(recipeId);
+        });
+        
+        async function loadRecipeData(recipeId) {
+            try {
+                // Get recipes from localStorage
+                const recipesJson = localStorage.getItem('openrecipe_recipes');
+                if (!recipesJson) {
+                    throw new Error('No recipes found');
+                }
+                
+                const recipes = JSON.parse(recipesJson);
+                const recipe = recipes.find(r => r.id === recipeId);
+                
+                if (!recipe) {
+                    throw new Error('Recipe not found');
+                }
+                
+                // Populate form fields
+                document.getElementById('recipeId').value = recipe.id;
+                document.getElementById('title').value = recipe.title || '';
+                document.getElementById('description').value = recipe.description || '';
+                document.getElementById('prepTime').value = recipe.prepTime || '';
+                document.getElementById('cookTime').value = recipe.cookTime || '';
+                document.getElementById('servings').value = recipe.servings || '';
+                document.getElementById('difficulty').value = recipe.difficulty || 'Easy';
+                document.getElementById('category').value = recipe.category || '';
+                document.getElementById('imageUrl').value = recipe.imageUrl || '';
+                
+                // Setup ingredients
+                setupIngredients(recipe.ingredients || ['']);
+                
+                // Setup instructions
+                setupInstructions(recipe.instructions || ['']);
+                
+                // Setup tags
+                setupTags(recipe.tags || []);
+                
+                // Setup form submission
+                setupFormSubmission(recipeId);
+                
+            } catch (error) {
+                console.error('Error loading recipe:', error);
+                alert('Failed to load recipe. Redirecting to home page...');
+                window.location.href = 'index.html';
+            }
+        }
+        
+        function setupIngredients(initialIngredients) {
+            const container = document.getElementById('ingredientsContainer');
+            const addButton = document.getElementById('addIngredient');
+            let ingredients = [...initialIngredients];
+            
+            function renderIngredients() {
+                container.innerHTML = ingredients.map((ingredient, index) => `
+                    <div class="ingredient-row">
+                        <input 
+                            type="text" 
+                            class="form-control"
+                            placeholder="Ingredient ${index + 1}"
+                            value="${ingredient}"
+                            data-index="${index}"
+                            required="${index === 0}"
+                        >
+                        ${ingredients.length > 1 ? `
+                            <button 
+                                type="button" 
+                                class="btn-icon btn-remove"
+                                onclick="removeIngredient(${index})"
+                                title="Remove ingredient"
+                            >
+                                <i class="fas fa-times"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `).join('');
+            }
+            
+            window.removeIngredient = function(index) {
+                if (ingredients.length > 1) {
+                    ingredients.splice(index, 1);
+                    renderIngredients();
+                }
+            };
+            
+            addButton.addEventListener('click', function() {
+                ingredients.push('');
+                renderIngredients();
+            });
+            
+            renderIngredients();
+            
+            // Store ingredients in form submission
+            window.currentIngredients = ingredients;
+            container.addEventListener('input', function(e) {
+                if (e.target.tagName === 'INPUT') {
+                    const index = parseInt(e.target.dataset.index);
+                    window.currentIngredients[index] = e.target.value;
+                }
+            });
+        }
+        
+        function setupInstructions(initialInstructions) {
+            const container = document.getElementById('instructionsContainer');
+            const addButton = document.getElementById('addInstruction');
+            let instructions = [...initialInstructions];
+            
+            function renderInstructions() {
+                container.innerHTML = instructions.map((instruction, index) => `
+                    <div class="instruction-row">
+                        <textarea 
+                            class="form-control"
+                            placeholder="Step ${index + 1}"
+                            rows="2"
+                            data-index="${index}"
+                            required="${index === 0}"
+                        >${instruction}</textarea>
+                        ${instructions.length > 1 ? `
+                            <button 
+                                type="button" 
+                                class="btn-icon btn-remove"
+                                onclick="removeInstruction(${index})"
+                                title="Remove step"
+                            >
+                                <i class="fas fa-times"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `).join('');
+            }
+            
+            window.removeInstruction = function(index) {
+                if (instructions.length > 1) {
+                    instructions.splice(index, 1);
+                    renderInstructions();
+                }
+            };
+            
+            addButton.addEventListener('click', function() {
+                instructions.push('');
+                renderInstructions();
+            });
+            
+            renderInstructions();
+            
+            // Store instructions in form submission
+            window.currentInstructions = instructions;
+            container.addEventListener('input', function(e) {
+                if (e.target.tagName === 'TEXTAREA') {
+                    const index = parseInt(e.target.dataset.index);
+                    window.currentInstructions[index] = e.target.value;
+                }
+            });
+        }
+        
+        function setupTags(initialTags) {
+            const container = document.getElementById('tagsContainer');
+            const input = document.getElementById('tagInput');
+            const addButton = document.getElementById('addTag');
+            let tags = [...initialTags];
+            
+            function renderTags() {
+                container.innerHTML = `
+                    <div class="tags-container">
+                        ${tags.map(tag => `
+                            <span class="tag">
+                                ${tag}
+                                <button 
+                                    type="button" 
+                                    onclick="removeTag('${tag}')"
+                                    title="Remove tag"
+                                >
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </span>
+                        `).join('')}
+                        ${tags.length === 0 ? '<p class="text-gray-500 text-sm">No tags added yet</p>' : ''}
+                    </div>
+                `;
+            }
+            
+            window.removeTag = function(tagToRemove) {
+                tags = tags.filter(tag => tag !== tagToRemove);
+                renderTags();
+            };
+            
+            function addTag() {
+                const tag = input.value.trim().toLowerCase();
+                if (tag && !tags.includes(tag)) {
+                    tags.push(tag);
+                    renderTags();
+                    input.value = '';
+                }
+            }
+            
+            addButton.addEventListener('click', addTag);
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addTag();
+                }
+            });
+            
+            renderTags();
+            
+            // Store tags in form submission
+            window.currentTags = tags;
+        }
+        
+        function setupFormSubmission(recipeId) {
+            const form = document.getElementById('recipeForm');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form data
+                const formData = new FormData(form);
+                const recipeData = {
+                    id: recipeId,
+                    title: formData.get('title').trim(),
+                    description: formData.get('description').trim(),
+                    prepTime: parseInt(formData.get('prepTime')) || 0,
+                    cookTime: parseInt(formData.get('cookTime')) || 0,
+                    servings: parseInt(formData.get('servings')) || 1,
+                    difficulty: formData.get('difficulty') || 'Easy',
+                    category: formData.get('category') || 'Other',
+                    ingredients: window.currentIngredients.filter(i => i.trim() !== ''),
+                    instructions: window.currentInstructions.filter(i => i.trim() !== ''),
+                    tags: window.currentTags || [],
+                    imageUrl: formData.get('imageUrl')?.trim() || ''
+                };
+                
+                // Validate
+                if (!recipeData.title || !recipeData.description) {
+                    alert('Title and description are required');
+                    return;
+                }
+                
+                if (recipeData.ingredients.length === 0 || recipeData.instructions.length === 0) {
+                    alert('Please add at least one ingredient and one instruction');
+                    return;
+                }
+                
+                // Save recipe
+                saveRecipe(recipeData);
+            });
+        }
+        
+        async function saveRecipe(recipeData) {
+            try {
+                // Show loading
+                const submitButton = document.querySelector('button[type="submit"]');
+                const originalText = submitButton.innerHTML;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                submitButton.disabled = true;
+                
+                // Get existing recipes
+                const recipesJson = localStorage.getItem('openrecipe_recipes');
+                const recipes = recipesJson ? JSON.parse(recipesJson) : [];
+                
+                // Find and update recipe
+                const index = recipes.findIndex(r => r.id === recipeData.id);
+                if (index === -1) {
+                    throw new Error('Recipe not found');
+                }
+                
+                // Preserve creation date
+                recipeData.createdAt = recipes[index].createdAt;
+                
+                // Update recipe
+                recipes[index] = recipeData;
+                
+                // Save back to localStorage
+                localStorage.setItem('openrecipe_recipes', JSON.stringify(recipes));
+                
+                // Show success
+                alert('Recipe updated successfully!');
+                
+                // Redirect to recipe detail
+                setTimeout(() => {
+                    window.location.href = `recipe-detail.html?id=${recipeData.id}`;
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Error saving recipe:', error);
+                alert('Error: ' + error.message);
+                
+                // Restore button
+                const submitButton = document.querySelector('button[type="submit"]');
+                submitButton.innerHTML = '<i class="fas fa-save"></i> Update Recipe';
+                submitButton.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

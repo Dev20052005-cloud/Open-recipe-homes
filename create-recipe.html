@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Recipe - OpenRecipe</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-utensils"></i>
+                    <span>OpenRecipe</span>
+                </a>
+                <div class="nav-links">
+                    <a href="index.html" class="nav-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="form-container">
+            <h1 class="text-center mb-6">Edit Recipe</h1>
+            
+            <form id="recipeForm">
+                <input type="hidden" id="recipeId" name="id">
+                
+                <!-- Basic Info -->
+                <div class="form-row mb-6">
+                    <div class="form-group">
+                        <label for="title" class="form-label">Recipe Title *</label>
+                        <input type="text" id="title" name="title" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category" class="form-label">Category *</label>
+                        <select id="category" name="category" class="form-control" required>
+                            <option value="">Select Category</option>
+                            <option value="Breakfast">Breakfast</option>
+                            <option value="Lunch">Lunch</option>
+                            <option value="Dinner">Dinner</option>
+                            <option value="Dessert">Dessert</option>
+                            <option value="Vegetarian">Vegetarian</option>
+                            <option value="Vegan">Vegan</option>
+                            <option value="Seafood">Seafood</option>
+                            <option value="Meat">Meat</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Description -->
+                <div class="form-group mb-6">
+                    <label for="description" class="form-label">Description *</label>
+                    <textarea id="description" name="description" class="form-control" rows="3" required></textarea>
+                </div>
+                
+                <!-- Time & Servings -->
+                <div class="form-row mb-6">
+                    <div class="form-group">
+                        <label for="prepTime" class="form-label">Prep Time (minutes)</label>
+                        <input type="number" id="prepTime" name="prepTime" class="form-control" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cookTime" class="form-label">Cook Time (minutes)</label>
+                        <input type="number" id="cookTime" name="cookTime" class="form-control" min="0">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="servings" class="form-label">Servings</label>
+                        <input type="number" id="servings" name="servings" class="form-control" min="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="difficulty" class="form-label">Difficulty</label>
+                        <select id="difficulty" name="difficulty" class="form-control">
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Ingredients -->
+                <div class="form-group mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="form-label">Ingredients *</label>
+                        <button type="button" id="addIngredient" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-plus"></i> Add Ingredient
+                        </button>
+                    </div>
+                    <div id="ingredientsContainer"></div>
+                </div>
+                
+                <!-- Instructions -->
+                <div class="form-group mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="form-label">Instructions *</label>
+                        <button type="button" id="addInstruction" class="btn btn-secondary btn-sm">
+                            <i class="fas fa-plus"></i> Add Step
+                        </button>
+                    </div>
+                    <div id="instructionsContainer"></div>
+                </div>
+                
+                <!-- Tags -->
+                <div class="form-group mb-6">
+                    <label class="form-label">Tags</label>
+                    <div class="tag-input-group">
+                        <input type="text" id="tagInput" class="form-control" placeholder="Add a tag (e.g., spicy, healthy)">
+                        <button type="button" id="addTag" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div id="tagsContainer"></div>
+                </div>
+                
+                <!-- Image URL -->
+                <div class="form-group mb-6">
+                    <label for="imageUrl" class="form-label">Image URL (Optional)</label>
+                    <input type="url" id="imageUrl" name="imageUrl" class="form-control">
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="flex justify-end gap-4">
+                    <a href="index.html" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update Recipe
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 OpenRecipe. All recipes shared by our amazing community.</p>
+        </div>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/recipe-form.js"></script>
+</body>
+</html>
